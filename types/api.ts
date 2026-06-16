@@ -78,6 +78,8 @@ export interface HealthResponse {
 
 /**
  * Parameters for GET /v1/risk.
+ *
+ * @see {@link docs/API_CONTRACT.md}
  */
 export interface GetRiskScoreParams {
   invoiceId: string;
@@ -88,6 +90,8 @@ export interface GetRiskScoreParams {
  *
  * - riskScore is expected to be a numeric score (typically 0-100).
  * - factors is an optional map of contributing factor names to weights/scores.
+ *
+ * @see {@link docs/API_CONTRACT.md#2-get-v1risk}
  */
 export interface RiskScoreResponse {
   invoiceId: string;
@@ -104,6 +108,8 @@ export interface RiskScoreResponse {
 
 /**
  * Minimal invoice summary used by the dashboard table.
+ *
+ * @see {@link docs/API_CONTRACT.md#1-get-invoices}
  */
 export interface InvoiceSummary {
   id: string;
@@ -115,6 +121,11 @@ export interface InvoiceSummary {
   [key: string]: unknown;
 }
 
+/**
+ * GET /invoices response.
+ *
+ * @see {@link docs/API_CONTRACT.md#1-get-invoices}
+ */
 export interface InvoicesResponse {
   data: InvoiceSummary[];
   pagination: {
