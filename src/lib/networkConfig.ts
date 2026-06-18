@@ -31,10 +31,19 @@ export const NETWORK_CONFIGS: Record<NetworkType, NetworkConfig> = {
   },
 };
 
+/**
+ * Returns the full network configuration for the given network type.
+ * @param network - The network type.
+ * @returns The NetworkConfig object.
+ */
 export function getNetworkConfig(network: NetworkType): NetworkConfig {
   return NETWORK_CONFIGS[network];
 }
 
+/**
+ * Returns whether the app is running in development mode.
+ * @returns True if NODE_ENV is not 'production'.
+ */
 export function isDevelopment(): boolean {
   return process.env.NODE_ENV !== 'production';
 }
@@ -42,6 +51,10 @@ export function isDevelopment(): boolean {
 // Local storage key for network override
 const NETWORK_OVERRIDE_KEY = 'tradeflow_network_override';
 
+/**
+ * Reads a network override from localStorage (development only).
+ * @returns The overridden network type, or null.
+ */
 export function getNetworkOverride(): NetworkType | null {
   if (typeof window === 'undefined' || !isDevelopment()) return null;
   
@@ -54,6 +67,10 @@ export function getNetworkOverride(): NetworkType | null {
   }
 }
 
+/**
+ * Persists a network override to localStorage (development only).
+ * @param network - The network type to set as override.
+ */
 export function setNetworkOverride(network: NetworkType): void {
   if (typeof window === 'undefined' || !isDevelopment()) return;
   
@@ -64,6 +81,9 @@ export function setNetworkOverride(network: NetworkType): void {
   }
 }
 
+/**
+ * Removes the network override from localStorage.
+ */
 export function clearNetworkOverride(): void {
   if (typeof window === 'undefined' || !isDevelopment()) return;
   
@@ -74,6 +94,11 @@ export function clearNetworkOverride(): void {
   }
 }
 
+/**
+ * Returns the effective network, preferring a stored override over the default.
+ * @param defaultNetwork - The fallback network type.
+ * @returns The resolved network type.
+ */
 export function getEffectiveNetwork(defaultNetwork: NetworkType = 'Testnet'): NetworkType {
   return getNetworkOverride() || defaultNetwork;
 }

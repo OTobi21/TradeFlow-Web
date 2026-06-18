@@ -43,6 +43,10 @@ const SOROBAN_CODE_MAP: Record<number, string> = {
   23: "Transaction was dropped from the mempool.",
 };
 
+/**
+ * Extracts a human-readable message from an unknown error value.
+ * Handles strings, Error objects, and generic objects.
+ */
 function extractMessage(error: unknown): string {
   if (typeof error === "string") return error;
   if (error instanceof Error) return error.message ?? "";
@@ -53,6 +57,12 @@ function extractMessage(error: unknown): string {
   return String(error ?? "");
 }
 
+/**
+ * Parses a Freighter / Soroban error into a user-friendly message and type.
+ * Detects user rejection, network errors, contract errors, and unknown errors.
+ * @param error - The raw error from a wallet or contract interaction.
+ * @returns A ParsedTxError with type and human-readable message.
+ */
 export function parseFreighterError(error: unknown): ParsedTxError {
   const raw = extractMessage(error);
   const lower = raw.toLowerCase();

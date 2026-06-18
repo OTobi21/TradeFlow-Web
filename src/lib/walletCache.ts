@@ -109,7 +109,11 @@ export function getCachedWalletConnection(): WalletConnectionState {
 }
 
 /**
- * Save wallet connection state to localStorage
+ * Persists wallet connection state to localStorage for cache across page refreshes.
+ * @param walletAddress - The connected wallet's public key.
+ * @param walletType - The wallet provider type.
+ * @param isConnected - Whether the wallet is connected.
+ * @param network - The Stellar network identifier.
  */
 export function setWalletConnectionCache(
   walletAddress: string | null,
@@ -136,7 +140,7 @@ export function setWalletConnectionCache(
 }
 
 /**
- * Clear wallet connection cache
+ * Clears the wallet connection cache from localStorage.
  */
 export function clearWalletCache(): void {
   if (typeof window === 'undefined') return;
@@ -149,7 +153,8 @@ export function clearWalletCache(): void {
 }
 
 /**
- * Check if cached connection needs revalidation
+ * Checks whether the cached wallet connection needs revalidation (TTL exceeded).
+ * @returns True if the cache is stale and should be revalidated.
  */
 export function needsRevalidation(): boolean {
   const cached = getCachedWalletConnection();
@@ -157,7 +162,8 @@ export function needsRevalidation(): boolean {
 }
 
 /**
- * Update cache timestamp (useful for extending cache life)
+ * Updates the cache timestamp to extend its TTL.
+ * Useful after a successful revalidation.
  */
 export function updateCacheTimestamp(): void {
   if (typeof window === 'undefined') return;
@@ -175,7 +181,8 @@ export function updateCacheTimestamp(): void {
 }
 
 /**
- * Get cache age in milliseconds
+ * Returns the age of the wallet connection cache in milliseconds.
+ * @returns The cache age in ms, or 0 if no cache exists.
  */
 export function getCacheAge(): number {
   if (typeof window === 'undefined') return 0;

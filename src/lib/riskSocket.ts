@@ -36,6 +36,11 @@ export class RiskSocketClient {
     this.token = options.token ?? getAuthToken();
   }
 
+  /**
+   * Registers an event listener for WebSocket events.
+   * @param listener - Callback invoked on RiskSocketEvent.
+   * @returns An unsubscribe function to remove the listener.
+   */
   on(listener: Listener): () => void {
     this.listeners.add(listener);
     return () => {
@@ -43,6 +48,10 @@ export class RiskSocketClient {
     };
   }
 
+  /**
+   * Opens the WebSocket connection and subscribes to any previously registered rooms.
+   * Handles reconnection with exponential backoff on unexpected close.
+   */
   connect(): void {
     if (typeof window === "undefined") return;
     if (!this.wsBaseUrl) return;
@@ -93,6 +102,10 @@ export class RiskSocketClient {
     };
   }
 
+  /**
+   * Closes the WebSocket connection and clears the reconnect timer.
+   * Will not automatically reconnect after calling this.
+   */
   disconnect(): void {
     this.intentionallyClosed = true;
     this.clearReconnectTimer();
@@ -106,12 +119,20 @@ export class RiskSocketClient {
     }
   }
 
+  /**
+   * Enables or disables the generic risk feed subscription.
+   * @param enabled - True to subscribe, false to unsubscribe.
+   */
   enableRiskFeed(enabled: boolean): void {
     this.riskFeedEnabled = enabled;
     if (enabled) this.safeSend({ type: "subscribe", payload: { room: "risk:feed" } });
     else this.safeSend({ type: "unsubscribe", payload: { room: "risk:feed" } });
   }
 
+  /**
+   * Subscribes to real-time risk updates for a specific invoice.
+   * @param invoiceId - The invoice to subscribe to.
+   */
   subscribeInvoice(invoiceId: string): void {
     const room = `invoice:${invoiceId}`;
     if (this.invoiceRooms.has(room)) return;
@@ -119,6 +140,10 @@ export class RiskSocketClient {
     this.safeSend({ type: "subscribe", payload: { room, invoiceId } });
   }
 
+  /**
+   * Unsubscribes from real-time risk updates for a specific invoice.
+   * @param invoiceId - The invoice to unsubscribe from.
+   */
   unsubscribeInvoice(invoiceId: string): void {
     const room = `invoice:${invoiceId}`;
     if (!this.invoiceRooms.has(room)) return;
@@ -126,6 +151,11 @@ export class RiskSocketClient {
     this.safeSend({ type: "unsubscribe", payload: { room, invoiceId } });
   }
 
+  /**
+   * Synchronises the set of subscribed invoices to match the given list.
+   * Unsubscribes removed invoices and subscribes new ones.
+   * @param invoiceIds - The full set of invoice IDs to subscribe to.
+   */
   syncInvoices(invoiceIds: string[]): void {
     const desired = new Set(invoiceIds.map((id) => `invoice:${id}`));
 

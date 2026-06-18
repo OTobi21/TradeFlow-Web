@@ -175,14 +175,18 @@ export class StellarWalletConnector implements WalletConnector {
 }
 
 /**
- * Factory function to create a wallet connector for the specified wallet type
+ * Creates a wallet connector instance for the given wallet type.
+ * @param walletType - The wallet provider identifier.
+ * @returns A WalletConnector instance.
  */
 export function createWalletConnector(walletType: WalletType): WalletConnector {
   return new StellarWalletConnector(walletType);
 }
 
 /**
- * Get wallet display name
+ * Returns the human-readable display name for a wallet type.
+ * @param walletType - The wallet provider identifier.
+ * @returns The wallet display name.
  */
 export function getWalletDisplayName(walletType: WalletType): string {
   switch (walletType) {
@@ -198,7 +202,9 @@ export function getWalletDisplayName(walletType: WalletType): string {
 }
 
 /**
- * Get wallet description
+ * Returns a short description for a wallet type.
+ * @param walletType - The wallet provider identifier.
+ * @returns The wallet description.
  */
 export function getWalletDescription(walletType: WalletType): string {
   switch (walletType) {
@@ -214,7 +220,9 @@ export function getWalletDescription(walletType: WalletType): string {
 }
 
 /**
- * Get wallet icon SVG path
+ * Returns an SVG path string for the wallet's icon.
+ * @param walletType - The wallet provider identifier.
+ * @returns An SVG path string.
  */
 export function getWalletIcon(walletType: WalletType): string {
   switch (walletType) {
@@ -230,7 +238,9 @@ export function getWalletIcon(walletType: WalletType): string {
 }
 
 /**
- * Get wallet background color class
+ * Returns a Tailwind background colour class for the wallet type.
+ * @param walletType - The wallet provider identifier.
+ * @returns A Tailwind CSS class string.
  */
 export function getWalletBgColor(walletType: WalletType): string {
   switch (walletType) {

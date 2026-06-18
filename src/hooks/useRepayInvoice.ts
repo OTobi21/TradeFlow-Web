@@ -1,11 +1,22 @@
 import { useState } from "react";
 import { repayInvoice } from "@/soroban";
 
+/**
+ * Hook for repaying an invoice via the Soroban smart contract.
+ * Manages loading, error, and transaction status states.
+ * @returns An object with the repay function, loading state, error, and txStatus.
+ */
 export function useRepayInvoice() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [txStatus, setTxStatus] = useState<string | null>(null);
 
+  /**
+   * Executes the invoice repayment transaction.
+   * @param invoiceId - The ID of the invoice to repay.
+   * @param callerPublicKey - The Stellar public key of the caller.
+   * @returns The transaction status string.
+   */
   async function repay(invoiceId: string, callerPublicKey: string) {
     setLoading(true);
     setError(null);

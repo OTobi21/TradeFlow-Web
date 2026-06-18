@@ -223,11 +223,19 @@ export async function signTransaction(
   }
 }
 
+/**
+ * Retrieves the network identifier from the currently connected wallet.
+ * @returns The network passphrase or identifier.
+ */
 export async function getNetwork(): Promise<string> {
   if (!currentWalletConnector) throw new Error("No wallet connector available.");
   return await currentWalletConnector.getNetwork();
 }
 
+/**
+ * Checks whether a wallet is currently connected.
+ * @returns True if a wallet session is active.
+ */
 export async function isWalletConnected(): Promise<boolean> {
   if (!currentWalletConnector) return false;
   return await currentWalletConnector.isConnected();

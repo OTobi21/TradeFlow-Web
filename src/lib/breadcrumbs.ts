@@ -57,7 +57,10 @@ export function formatPathSegment(segment: string): string {
 }
 
 /**
- * Generates breadcrumb items from a pathname
+ * Generates breadcrumb items from a pathname.
+ * Splits the path into segments and builds breadcrumb objects with incremental hrefs.
+ * @param pathname - The URL pathname to convert.
+ * @returns An array of BreadcrumbItem objects.
  */
 export function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
   // Remove leading/trailing slashes and split by slash
@@ -99,7 +102,9 @@ export function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
 }
 
 /**
- * Gets a page title from breadcrumbs
+ * Gets the page title from the active breadcrumb, or falls back to "TradeFlow".
+ * @param breadcrumbs - The list of breadcrumb items.
+ * @returns The page title string.
  */
 export function getPageTitle(breadcrumbs: BreadcrumbItem[]): string {
   if (breadcrumbs.length === 0) return 'TradeFlow';

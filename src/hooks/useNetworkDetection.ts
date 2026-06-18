@@ -13,6 +13,11 @@ export interface NetworkMismatchState {
   showWarning: boolean;
 }
 
+/**
+ * Hook that monitors for Stellar network mismatches between the app configuration
+ * and the connected wallet. Provides warning state and controls.
+ * @returns Network mismatch state, along with recheck and dismiss functions.
+ */
 export function useNetworkDetection() {
   const [networkState, setNetworkState] = useState<NetworkMismatchState>({
     isMismatched: false,

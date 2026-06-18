@@ -69,6 +69,13 @@ export interface WsUrlOptions {
   required?: boolean;
 }
 
+/**
+ * Returns the WebSocket base URL.
+ * Falls back to deriving a WS URL from the API base URL,
+ * or from the current window location in the browser.
+ * @param options - Configuration options.
+ * @returns The WebSocket base URL string.
+ */
 export function getWsBaseUrl(options: WsUrlOptions = {}): string {
   const { required = false } = options;
   const { wsUrl } = getPublicEnvConfig();

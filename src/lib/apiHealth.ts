@@ -10,7 +10,13 @@ export interface ApiCallOptions {
 }
 
 /**
- * Enhanced fetch wrapper that monitors backend health
+ * Enhanced fetch wrapper that monitors backend health.
+ * Checks response status against backend error codes and throws on issues.
+ * @param url - The URL to fetch.
+ * @param options - Standard fetch options.
+ * @param healthOptions - Health monitoring configuration.
+ * @returns The fetch Response.
+ * @throws Error if the backend returns an error status code.
  */
 export async function apiFetch(
   url: string,
@@ -41,7 +47,9 @@ export async function apiFetch(
 }
 
 /**
- * Hook for making API calls with automatic health monitoring
+ * Hook for making API calls with automatic health monitoring.
+ * Reports success/failure to the BackendHealthContext.
+ * @returns An object with the monitoredFetch function.
  */
 export function useApiHealth() {
   const { reportError, reportSuccess } = useBackendHealth();
@@ -73,7 +81,9 @@ export function useApiHealth() {
 }
 
 /**
- * Utility function to check if an error is a backend health issue
+ * Checks if an error indicates a backend health issue (HTTP 5xx or network error).
+ * @param error - The error to inspect.
+ * @returns True if the error is a backend health issue.
  */
 export function isBackendHealthError(error: Error): boolean {
   const message = error.message.toLowerCase();
@@ -97,7 +107,9 @@ export function isBackendHealthError(error: Error): boolean {
 }
 
 /**
- * React Query wrapper for automatic health monitoring
+ * Creates a React Query error handler that reports backend health issues.
+ * @param reportError - Function to report errors to the health context.
+ * @returns A function suitable for use as onError in React Query hooks.
  */
 export function createQueryErrorHandler(reportError: (error: Error, endpoint?: string) => void) {
   return (error: Error, query: any) => {

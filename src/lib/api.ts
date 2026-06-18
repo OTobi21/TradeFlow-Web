@@ -15,6 +15,10 @@ import {
 } from "../../types/api";
 import { httpClient, normalizeHttpError } from "./httpClient";
 
+/**
+ * Converts Axios headers object to a plain Record<string, string>.
+ * Handles arrays, numbers, and booleans by joining or stringifying.
+ */
 function toHeadersRecord(headers: any): Record<string, string> {
   const out: Record<string, string> = {};
   if (!headers) return out;
@@ -27,21 +31,35 @@ function toHeadersRecord(headers: any): Record<string, string> {
   return out;
 }
 
+/**
+ * Casts a numeric HTTP status to the ApiStatusCode branded type.
+ */
 function asStatusCode(status: number): ApiStatusCode {
   return status as ApiStatusCode;
 }
 
+/**
+ * Returns a 400 ApiResult with the given error message.
+ */
 function badRequest(message: string): ApiResult<never> {
   return { ok: false, status: 400, error: { message } };
 }
 
+/**
+ * Validates an invoice ID for safe use in URL parameters.
+ * Rejects empty, overly long, or non-alphanumeric values.
+ */
 function isSafeInvoiceId(invoiceId: string): boolean {
   if (!invoiceId) return false;
   if (invoiceId.length > 128) return false;
   return /^[a-zA-Z0-9._:-]+$/.test(invoiceId);
 }
 
+/**
+ * Optional request configuration passed to API functions.
+ */
 export interface RequestOptions {
+  /** Optional AbortSignal to cancel the request */
   signal?: AbortSignal;
 }
 

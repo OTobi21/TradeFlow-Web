@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { getInvoice, type Invoice } from "@/soroban";
 
 /**
- * Fetches an invoice from the Soroban contract and exposes loading/error state.
+ * Fetches a single invoice from the Soroban contract and exposes loading/error state.
  * Used by the invoice detail page to display on-chain data.
+ * @param invoiceId - The on-chain invoice identifier.
+ * @returns An object with the invoice data, loading state, and error.
  */
 export function useInvoice(invoiceId: string) {
   const [invoice, setInvoice] = useState<Invoice | null>(null);

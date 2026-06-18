@@ -17,6 +17,11 @@ export interface SetAuthTokenOptions {
   persist?: "memory" | "session";
 }
 
+/**
+ * Stores the auth token in memory and optionally in sessionStorage.
+ * @param token - The token to store, or null to clear.
+ * @param options - Persistence strategy (memory or session).
+ */
 export function setAuthToken(token: string | null, options: SetAuthTokenOptions = {}): void {
   const { persist = "session" } = options;
   inMemoryAuthToken = token;
@@ -35,6 +40,10 @@ export function setAuthToken(token: string | null, options: SetAuthTokenOptions 
   }
 }
 
+/**
+ * Retrieves the stored auth token from memory or sessionStorage.
+ * @returns The auth token string, or null.
+ */
 export function getAuthToken(): string | null {
   if (inMemoryAuthToken) return inMemoryAuthToken;
   if (typeof window === "undefined") return null;
@@ -47,6 +56,9 @@ export function getAuthToken(): string | null {
   }
 }
 
+/**
+ * Clears the stored auth token from memory and sessionStorage.
+ */
 export function clearAuthToken(): void {
   setAuthToken(null);
 }
@@ -121,6 +133,12 @@ function toPlainHeaders(headers: AxiosResponse["headers"]): Record<string, strin
   return out;
 }
 
+/**
+ * Normalizes various error types into structured ApiErrorDetails.
+ * Handles Axios errors specially, extracting status and response data.
+ * @param error - The raw error to normalize.
+ * @returns Normalized error details with optional status and headers.
+ */
 export function normalizeHttpError(error: unknown): {
   status?: ApiStatusCode;
   error: ApiErrorDetails;
@@ -152,6 +170,12 @@ export function normalizeHttpError(error: unknown): {
   };
 }
 
+/**
+ * Creates a configured Axios instance with auth interceptors, retry logic,
+ * and JSON response transformation.
+ * @param options - Optional overrides for base URL, timeout, and retries.
+ * @returns A configured AxiosInstance.
+ */
 export function createHttpClient(options: HttpClientOptions = {}): AxiosInstance {
   const baseURL = options.baseURL ?? getApiBaseUrl();
   const timeout = options.timeoutMs ?? 15000;
