@@ -13,6 +13,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import PageTransition from "../components/PageTransition";
 import QueryProvider from "../providers/QueryClientProvider";
 import { SettingsProvider } from "../lib/context/SettingsContext";
+import { ThemeProvider } from "../lib/context/ThemeContext";
 import NetworkGuard from "../components/general/NetworkGuard";
 import SignatureOverlay from "../components/SignatureOverlay";
 import { NetworkMismatchWarning } from "../components/NetworkMismatchWarning";
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body className="font-sans antialiased">
         <ErrorBoundary>
+          <ThemeProvider>
           <SettingsProvider>
             <QueryProvider>
               <BackendHealthProvider>
@@ -53,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </BackendHealthProvider>
             </QueryProvider>
           </SettingsProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>
