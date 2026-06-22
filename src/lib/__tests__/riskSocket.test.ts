@@ -1,11 +1,11 @@
-import { RiskSocketClient } from "../riskSocket";
+import { RiskSocketClient } from '../riskSocket';
 
-jest.mock("../env", () => ({
-  getWsBaseUrl: () => "ws://localhost:1234",
+jest.mock('../env', () => ({
+  getWsBaseUrl: () => 'ws://localhost:1234',
 }));
 
-jest.mock("../httpClient", () => ({
-  getAuthToken: () => "test-token",
+jest.mock('../httpClient', () => ({
+  getAuthToken: () => 'test-token',
 }));
 
 class MockWebSocket {
@@ -39,30 +39,30 @@ class MockWebSocket {
   }
 }
 
-describe("RiskSocketClient", () => {
+describe('RiskSocketClient', () => {
   beforeEach(() => {
     MockWebSocket.instances = [];
     (global as any).WebSocket = MockWebSocket;
   });
 
-  test("connect appends token and resubscribes invoice rooms on open", () => {
+  test('connect appends token and resubscribes invoice rooms on open', () => {
     const client = new RiskSocketClient();
     client.connect();
 
     expect(MockWebSocket.instances).toHaveLength(1);
     const ws = MockWebSocket.instances[0]!;
-    expect(ws.url).toContain("token=test-token");
+    expect(ws.url).toContain('token=test-token');
 
-    client.subscribeInvoice("INV-1");
+    client.subscribeInvoice('INV-1');
 
     ws.readyState = 1;
     ws.onopen?.();
 
-    expect(ws.sent.some((s) => s.includes("\"type\":\"subscribe\""))).toBe(true);
-    expect(ws.sent.some((s) => s.includes("invoice:INV-1"))).toBe(true);
+    expect(ws.sent.some((s) => s.includes('"type":"subscribe"'))).toBe(true);
+    expect(ws.sent.some((s) => s.includes('invoice:INV-1'))).toBe(true);
   });
 
-  test("emits risk_update events from incoming messages", () => {
+  test('emits risk_update events from incoming messages', () => {
     const client = new RiskSocketClient();
     client.connect();
 
@@ -74,15 +74,17 @@ describe("RiskSocketClient", () => {
     client.on((evt) => received.push(evt));
 
     ws.onmessage?.({
-      data: JSON.stringify({ event: "risk_update", data: { invoiceId: "INV-9", riskScore: 88 } }),
+      data: JSON.stringify({ event: 'risk_update', data: { invoiceId: 'INV-9', riskScore: 88 } }),
     });
 
-    expect(received.some((e) => e.event === "risk_update" && e.data.invoiceId === "INV-9")).toBe(true);
+    expect(received.some((e) => e.event === 'risk_update' && e.data.invoiceId === 'INV-9')).toBe(
+      true
+    );
   });
 
-  test("reconnects with backoff when the socket closes unexpectedly", () => {
+  test('reconnects with backoff when the socket closes unexpectedly', () => {
     jest.useFakeTimers();
-    jest.spyOn(Math, "random").mockReturnValue(0);
+    jest.spyOn(Math, 'random').mockReturnValue(0);
 
     const client = new RiskSocketClient();
     client.connect();
@@ -98,9 +100,9 @@ describe("RiskSocketClient", () => {
     jest.useRealTimers();
   });
 
-  test("does not reconnect after manual disconnect", () => {
+  test('does not reconnect after manual disconnect', () => {
     jest.useFakeTimers();
-    jest.spyOn(Math, "random").mockReturnValue(0);
+    jest.spyOn(Math, 'random').mockReturnValue(0);
 
     const client = new RiskSocketClient();
     client.connect();
