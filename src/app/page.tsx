@@ -10,10 +10,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { connectWallet, WalletType } from "../lib/stellar";
 import { PlusCircle, ShieldCheck, Landmark, Star, Wallet } from "lucide-react";
-import LoanTable from "../components/LoanTable";
 import SkeletonRow from "../components/SkeletonRow";
-import Navbar from "../components/Navbar";
-import StickyHeader from "../components/StickyHeader";
 import Card from "../components/Card";
 import FreighterConnectModal from "../components/FreighterConnectModal";
 import WalletModal from "../components/WalletModal";
@@ -21,7 +18,6 @@ import InvoiceMintForm from "../components/InvoiceMintForm";
 import InvoiceTable from "../components/InvoiceTable";
 import InvoiceFilter, { InvoiceFilters } from "../components/InvoiceFilter";
 import RWALoansDashboard from "../components/RWALoansDashboard";
-import NewsBanner from "../components/NewsBanner";
 import useTransactionToast from "../lib/useTransactionToast";
 import AddTrustlineButton from "../components/AddTrustlineButton";
 import ProModeSection from "../components/ProModeSection";
@@ -43,7 +39,7 @@ import Icon from "../components/ui/Icon";
 function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isConnected, walletAddress, isConnecting } = useWalletConnection();
+  const { walletAddress, isConnecting } = useWalletConnection();
   const [invoices, setInvoices] = useState<InvoiceSummary[]>([]);
   const [loading, setLoading] = useState(false);
   /** Controls visibility of the Invoice Minting modal */
@@ -155,12 +151,6 @@ function DashboardContent() {
     riskSocketRef.current?.syncInvoices(invoices.map((i) => i.id));
   }, [walletAddress, invoices]);
   const toast = useTransactionToast();
-
-  const handleTestToast = () => {
-    toast.loading();
-    toast.success();
-    toast.error();
-  };
 
   const handleInvoiceMint = (txStatus: string) => {
     console.log("Invoice minted, tx status:", txStatus);
