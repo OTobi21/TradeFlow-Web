@@ -72,7 +72,7 @@ export class RiskSocketClient {
       if (this.riskFeedEnabled) {
         this.safeSend({ type: 'subscribe', payload: { room: 'risk:feed' } });
       }
-      
+
       for (const room of this.invoiceRooms) {
         this.safeSend({ type: 'subscribe', payload: { room } });
       }

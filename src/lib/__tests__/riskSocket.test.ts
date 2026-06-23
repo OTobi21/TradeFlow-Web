@@ -47,7 +47,7 @@ describe('RiskSocketClient', () => {
 
     expect(MockWebSocket.instances).toHaveLength(1);
     const ws = MockWebSocket.instances[0]!;
-    
+
     // Token must not appear in the WebSocket URL — auth is handled via HttpOnly cookie
     expect(ws.url).not.toContain('token=');
 
