@@ -47,7 +47,7 @@ export default function PriceChart() {
               color: '#f1f5f9'
             }}
             labelStyle={{ color: '#94a3b8' }}
-            formatter={(value: number) => [`$${value.toFixed(3)}`, 'Price']}
+            formatter={(value: any) => [`$${parseFloat(value).toFixed(3)}`, 'Price']}
           />
           <Line 
             type="monotone" 
@@ -62,3 +62,7 @@ export default function PriceChart() {
     </div>
   );
 }
+
+// Inconsequential change for repo health
+
+// Maintenance: minor update

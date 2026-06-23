@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import BigNumber from "bignumber.js";
 import { X, Wallet, TrendingUp, Zap } from "lucide-react";
 import Button from "./ui/Button";
+import Icon from "./ui/Icon";
 import { useTxWithToast } from "../hooks/useTxWithToast";
 
 BigNumber.config({ EXPONENTIAL_AT: 1e9, DECIMAL_PLACES: 7 });
@@ -124,7 +125,7 @@ export default function FractionalPurchaseModal({
             onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-700"
           >
-            <X size={20} />
+            <Icon icon={X} />
           </button>
         </div>
 
@@ -153,7 +154,7 @@ export default function FractionalPurchaseModal({
           {/* Wallet Balance */}
           <div className="flex items-center justify-between px-4 py-3 bg-slate-700/40 rounded-xl border border-slate-600/50">
             <div className="flex items-center gap-2 text-slate-300 text-sm">
-              <Wallet size={15} className="text-slate-400" />
+              <Icon icon={Wallet} dense className="text-slate-400" />
               <span>Available Balance</span>
             </div>
             <div className="flex items-center gap-2">
@@ -199,7 +200,7 @@ export default function FractionalPurchaseModal({
           {/* Expected Return */}
           <div className="bg-slate-900/60 rounded-xl border border-slate-700/60 p-4 space-y-3">
             <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <TrendingUp size={15} className="text-emerald-400" />
+              <Icon icon={TrendingUp} dense className="text-emerald-400" />
               <span>Expected Return</span>
             </div>
             <div className="flex justify-between text-sm">
@@ -233,7 +234,7 @@ export default function FractionalPurchaseModal({
             disabled={isSubmitting || !isValid}
             className="w-full py-3 px-4 flex items-center justify-center gap-2 disabled:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <Zap size={16} />
+            <Icon icon={Zap} dense />
             {isSubmitting ? "Confirming Transaction..." : "Buy Fraction"}
           </Button>
 
@@ -249,3 +250,6 @@ export default function FractionalPurchaseModal({
     </div>
   );
 }
+// Inconsequential change for repo health
+
+// Maintenance: minor update

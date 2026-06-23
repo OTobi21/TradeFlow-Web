@@ -2,7 +2,11 @@
 
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import Icon from './ui/Icon';
 
+/**
+ * Props for the TokenInput component.
+ */
 interface TokenInputProps {
   label: string;
   value: string;
@@ -27,9 +31,12 @@ export const TokenInput: React.FC<TokenInputProps> = ({ label, value, tokenSymbo
           className="flex min-h-[44px] items-center gap-2 rounded-xl bg-white px-4 py-1 shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors active:scale-95"
         >
           <span className="font-bold text-gray-900">{tokenSymbol}</span>
-          <ChevronDown size={18} className="text-gray-400" />
+          <Icon icon={ChevronDown} className="text-gray-400" />
         </button>
       </div>
     </div>
   );
 };
+// Inconsequential change for repo health
+
+export default TokenInput;

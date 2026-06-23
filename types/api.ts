@@ -78,6 +78,8 @@ export interface HealthResponse {
 
 /**
  * Parameters for GET /v1/risk.
+ *
+ * @see {@link docs/API_CONTRACT.md}
  */
 export interface GetRiskScoreParams {
   invoiceId: string;
@@ -88,6 +90,8 @@ export interface GetRiskScoreParams {
  *
  * - riskScore is expected to be a numeric score (typically 0-100).
  * - factors is an optional map of contributing factor names to weights/scores.
+ *
+ * @see {@link docs/API_CONTRACT.md#2-get-v1risk}
  */
 export interface RiskScoreResponse {
   invoiceId: string;
@@ -104,16 +108,35 @@ export interface RiskScoreResponse {
 
 /**
  * Minimal invoice summary used by the dashboard table.
+ *
+ * @see {@link docs/API_CONTRACT.md#1-get-invoices}
  */
 export interface InvoiceSummary {
   id: string;
   riskScore: number;
   status: string;
   amount: number | string;
+  apy?: number;
+  riskTier?: 'A' | 'B' | 'C' | 'D';
   [key: string]: unknown;
 }
 
-export type InvoicesResponse = InvoiceSummary[];
+/**
+ * GET /invoices response.
+ *
+ * @see {@link docs/API_CONTRACT.md#1-get-invoices}
+ */
+export interface InvoicesResponse {
+  data: InvoiceSummary[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
 
 /**
  * A single PnL chart point.
@@ -163,8 +186,10 @@ export function isRiskScoreResponse(value: unknown): value is RiskScoreResponse 
  * Runtime validator for InvoicesResponse.
  */
 export function isInvoicesResponse(value: unknown): value is InvoicesResponse {
-  if (!Array.isArray(value)) return false;
-  return value.every((item) => {
+  if (!isRecord(value)) return false;
+  if (!Array.isArray(value.data)) return false;
+  if (!isRecord(value.pagination)) return false;
+  return value.data.every((item) => {
     if (!isRecord(item)) return false;
     return (
       typeof item.id === "string" &&
