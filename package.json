@@ -18,6 +18,8 @@
     "@sentry/nextjs": "^10.49.0",
     "@stellar/freighter-api": "^1.7.1",
     "@tailwindcss/postcss": "^4.0.0",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "axios": "^1.15.0",
     "bignumber.js": "^11.0.0",
     "class-variance-authority": "^0.7.1",
