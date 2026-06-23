@@ -1,4 +1,4 @@
-import { getWsBaseUrl } from "./env";
+import { getWsBaseUrl } from './env';
 
 export interface RiskUpdateEvent {
   invoiceId: string;
@@ -7,9 +7,9 @@ export interface RiskUpdateEvent {
 }
 
 export type RiskSocketEvent =
-  | { event: "risk_update"; data: RiskUpdateEvent }
-  | { event: "connected" }
-  | { event: "disconnected" };
+  | { event: 'risk_update'; data: RiskUpdateEvent }
+  | { event: 'connected' }
+  | { event: 'disconnected' };
 
 export interface RiskSocketClientOptions {
   wsBaseUrl?: string;
@@ -49,9 +49,12 @@ export class RiskSocketClient {
    * Handles reconnection with exponential backoff on unexpected close.
    */
   connect(): void {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
     if (!this.wsBaseUrl) return;
-    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+    if (
+      this.ws &&
+      (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)
+    ) {
       return;
     }
 
@@ -64,11 +67,14 @@ export class RiskSocketClient {
 
     ws.onopen = () => {
       this.reconnectAttempt = 0;
-      this.emit({ event: "connected" });
+      this.emit({ event: 'connected' });
 
-      if (this.riskFeedEnabled) this.safeSend({ type: "subscribe", payload: { room: "risk:feed" } });
+      if (this.riskFeedEnabled) {
+        this.safeSend({ type: 'subscribe', payload: { room: 'risk:feed' } });
+      }
+
       for (const room of this.invoiceRooms) {
-        this.safeSend({ type: "subscribe", payload: { room } });
+        this.safeSend({ type: 'subscribe', payload: { room } });
       }
     };
 
@@ -76,7 +82,7 @@ export class RiskSocketClient {
       const parsed = this.parseMessage(msg.data);
       if (!parsed) return;
 
-      if (parsed.event === "risk_update") {
+      if (parsed.event === 'risk_update') {
         this.emit(parsed);
       }
     };
@@ -87,7 +93,7 @@ export class RiskSocketClient {
 
     ws.onclose = () => {
       this.ws = null;
-      this.emit({ event: "disconnected" });
+      this.emit({ event: 'disconnected' });
       if (!this.intentionallyClosed) this.scheduleReconnect();
     };
   }
@@ -115,8 +121,8 @@ export class RiskSocketClient {
    */
   enableRiskFeed(enabled: boolean): void {
     this.riskFeedEnabled = enabled;
-    if (enabled) this.safeSend({ type: "subscribe", payload: { room: "risk:feed" } });
-    else this.safeSend({ type: "unsubscribe", payload: { room: "risk:feed" } });
+    if (enabled) this.safeSend({ type: 'subscribe', payload: { room: 'risk:feed' } });
+    else this.safeSend({ type: 'unsubscribe', payload: { room: 'risk:feed' } });
   }
 
   /**
@@ -127,7 +133,7 @@ export class RiskSocketClient {
     const room = `invoice:${invoiceId}`;
     if (this.invoiceRooms.has(room)) return;
     this.invoiceRooms.add(room);
-    this.safeSend({ type: "subscribe", payload: { room, invoiceId } });
+    this.safeSend({ type: 'subscribe', payload: { room, invoiceId } });
   }
 
   /**
@@ -138,7 +144,7 @@ export class RiskSocketClient {
     const room = `invoice:${invoiceId}`;
     if (!this.invoiceRooms.has(room)) return;
     this.invoiceRooms.delete(room);
-    this.safeSend({ type: "unsubscribe", payload: { room, invoiceId } });
+    this.safeSend({ type: 'unsubscribe', payload: { room, invoiceId } });
   }
 
   /**
@@ -151,7 +157,7 @@ export class RiskSocketClient {
 
     for (const existing of Array.from(this.invoiceRooms)) {
       if (!desired.has(existing)) {
-        const invoiceId = existing.slice("invoice:".length);
+        const invoiceId = existing.slice('invoice:'.length);
         this.unsubscribeInvoice(invoiceId);
       }
     }
@@ -179,7 +185,7 @@ export class RiskSocketClient {
   }
 
   private parseMessage(data: unknown): RiskSocketEvent | null {
-    if (typeof data !== "string") return null;
+    if (typeof data !== 'string') return null;
 
     let obj: any;
     try {
@@ -191,18 +197,22 @@ export class RiskSocketClient {
     const eventName = obj?.event || obj?.type;
     const payload = obj?.data ?? obj?.payload ?? obj;
 
-    if (eventName === "risk_update") {
+    if (eventName === 'risk_update') {
       const invoiceId = payload?.invoiceId;
       const riskScore = payload?.riskScore;
-      if (typeof invoiceId !== "string" || typeof riskScore !== "number") return null;
-      const updatedAt = typeof payload?.updatedAt === "string" ? payload.updatedAt : undefined;
-      return { event: "risk_update", data: { invoiceId, riskScore, updatedAt } };
+      if (typeof invoiceId !== 'string' || typeof riskScore !== 'number') return null;
+      const updatedAt = typeof payload?.updatedAt === 'string' ? payload.updatedAt : undefined;
+      return { event: 'risk_update', data: { invoiceId, riskScore, updatedAt } };
     }
 
-    if (typeof payload?.invoiceId === "string" && typeof payload?.riskScore === "number") {
+    if (typeof payload?.invoiceId === 'string' && typeof payload?.riskScore === 'number') {
       return {
-        event: "risk_update",
-        data: { invoiceId: payload.invoiceId, riskScore: payload.riskScore, updatedAt: payload.updatedAt },
+        event: 'risk_update',
+        data: {
+          invoiceId: payload.invoiceId,
+          riskScore: payload.riskScore,
+          updatedAt: payload.updatedAt,
+        },
       };
     }
 
@@ -228,4 +238,3 @@ export class RiskSocketClient {
     this.reconnectTimer = null;
   }
 }
-

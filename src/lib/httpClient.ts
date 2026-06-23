@@ -5,9 +5,9 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
-} from "axios";
-import { getApiBaseUrl } from "./env";
-import type { ApiErrorDetails, ApiStatusCode } from "../../types/api";
+} from 'axios';
+import { getApiBaseUrl } from './env';
+import type { ApiErrorDetails, ApiStatusCode } from '../../types/api';
 
 export interface HttpClientOptions {
   baseURL?: string;
@@ -18,8 +18,8 @@ export interface HttpClientOptions {
 type RetryableConfig = AxiosRequestConfig & { __retryCount?: number };
 
 function isIdempotentMethod(method?: string): boolean {
-  const m = (method || "GET").toUpperCase();
-  return m === "GET" || m === "HEAD" || m === "OPTIONS";
+  const m = (method || 'GET').toUpperCase();
+  return m === 'GET' || m === 'HEAD' || m === 'OPTIONS';
 }
 
 function shouldRetry(error: AxiosError, config: RetryableConfig, maxRetries: number): boolean {
@@ -44,7 +44,7 @@ function getBackoffDelayMs(retryCount: number): number {
 function sleep(ms: number, signal?: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
-      reject(new DOMException("Request aborted", "AbortError"));
+      reject(new DOMException('Request aborted', 'AbortError'));
       return;
     }
 
@@ -55,26 +55,26 @@ function sleep(ms: number, signal?: AbortSignal): Promise<void> {
 
     const onAbort = () => {
       cleanup();
-      reject(new DOMException("Request aborted", "AbortError"));
+      reject(new DOMException('Request aborted', 'AbortError'));
     };
 
     const cleanup = () => {
       clearTimeout(timer);
-      signal?.removeEventListener("abort", onAbort);
+      signal?.removeEventListener('abort', onAbort);
     };
 
-    signal?.addEventListener("abort", onAbort);
+    signal?.addEventListener('abort', onAbort);
   });
 }
 
-function toPlainHeaders(headers: AxiosResponse["headers"]): Record<string, string> {
+function toPlainHeaders(headers: AxiosResponse['headers']): Record<string, string> {
   const out: Record<string, string> = {};
   if (!headers) return out;
   for (const [key, value] of Object.entries(headers)) {
-    if (Array.isArray(value)) out[key] = value.join(", ");
-    else if (typeof value === "string") out[key] = value;
-    else if (typeof value === "number") out[key] = String(value);
-    else if (typeof value === "boolean") out[key] = value ? "true" : "false";
+    if (Array.isArray(value)) out[key] = value.join(', ');
+    else if (typeof value === 'string') out[key] = value;
+    else if (typeof value === 'number') out[key] = String(value);
+    else if (typeof value === 'boolean') out[key] = value ? 'true' : 'false';
   }
   return out;
 }
@@ -91,7 +91,7 @@ export function normalizeHttpError(error: unknown): {
   headers?: Record<string, string>;
 } {
   if (!axios.isAxiosError(error)) {
-    return { error: { message: error instanceof Error ? error.message : "Unknown error" } };
+    return { error: { message: error instanceof Error ? error.message : 'Unknown error' } };
   }
 
   const axiosError = error as AxiosError;
@@ -99,12 +99,12 @@ export function normalizeHttpError(error: unknown): {
   const headers = axiosError.response ? toPlainHeaders(axiosError.response.headers) : undefined;
 
   const message =
-    (typeof axiosError.response?.data === "object" &&
+    (typeof axiosError.response?.data === 'object' &&
       axiosError.response?.data &&
-      "error" in (axiosError.response.data as any) &&
+      'error' in (axiosError.response.data as any) &&
       (axiosError.response.data as any).error?.message) ||
     axiosError.message ||
-    "Request failed";
+    'Request failed';
 
   return {
     status,
@@ -133,13 +133,13 @@ export function createHttpClient(options: HttpClientOptions = {}): AxiosInstance
     timeout,
     withCredentials: true,
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
     transformResponse: [
       ...(axios.defaults.transformResponse as any),
       (data: any) => {
-        if (typeof data !== "string") return data;
+        if (typeof data !== 'string') return data;
         const trimmed = data.trim();
         if (!trimmed) return data;
         try {
@@ -155,7 +155,7 @@ export function createHttpClient(options: HttpClientOptions = {}): AxiosInstance
     if (!config.headers) {
       config.headers = new AxiosHeaders();
     }
-    config.headers.set("X-Requested-With", "XMLHttpRequest");
+    config.headers.set('X-Requested-With', 'XMLHttpRequest');
     return config;
   });
 
@@ -165,13 +165,13 @@ export function createHttpClient(options: HttpClientOptions = {}): AxiosInstance
       const config = (error.config || {}) as RetryableConfig;
 
       // Show user-friendly error toast when retries are exhausted for 429
-      if (error.response?.status === 429 &&
-        (config.__retryCount ?? 0) >= maxRetries) {
+      if (error.response?.status === 429 && (config.__retryCount ?? 0) >= maxRetries) {
         // Dynamic import to avoid server-side rendering issues
         if (typeof window !== 'undefined') {
           import('sonner').then(({ toast }) => {
             toast.error('Server is busy, please try again later', {
-              description: 'The server is experiencing high traffic. Please wait a moment and retry.',
+              description:
+                'The server is experiencing high traffic. Please wait a moment and retry.',
               duration: 5000,
             });
           });
@@ -185,7 +185,7 @@ export function createHttpClient(options: HttpClientOptions = {}): AxiosInstance
       config.__retryCount = (config.__retryCount ?? 0) + 1;
       await sleep(getBackoffDelayMs(config.__retryCount), config.signal as AbortSignal);
       return instance.request(config);
-    },
+    }
   );
 
   return instance;

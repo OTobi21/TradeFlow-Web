@@ -1,10 +1,10 @@
-require("@testing-library/jest-dom");
+require('@testing-library/jest-dom');
 
-if (typeof window !== "undefined") {
-  Object.defineProperty(window, "matchMedia", {
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
-      matches: query === "(prefers-color-scheme: dark)",
+      matches: query === '(prefers-color-scheme: dark)',
       media: query,
       onchange: null,
       addListener: jest.fn(),
@@ -31,7 +31,7 @@ if (typeof window !== "undefined") {
     };
   })();
 
-  Object.defineProperty(window, "localStorage", {
+  Object.defineProperty(window, 'localStorage', {
     writable: true,
     value: localStorageMock,
   });
