@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
-const COOKIE_NAME = "tradeflow_auth_token";
+const COOKIE_NAME = 'tradeflow_auth_token';
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict" as const,
-  path: "/",
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict' as const,
+  path: '/',
   // 24-hour session lifetime
   maxAge: 60 * 60 * 24,
 };
@@ -21,13 +21,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const body = await request.json();
-    token = typeof body?.token === "string" ? body.token.trim() : undefined;
+    token = typeof body?.token === 'string' ? body.token.trim() : undefined;
   } catch {
-    return NextResponse.json({ error: { message: "Invalid JSON body" } }, { status: 400 });
+    return NextResponse.json({ error: { message: 'Invalid JSON body' } }, { status: 400 });
   }
 
   if (!token) {
-    return NextResponse.json({ error: { message: "Missing token" } }, { status: 400 });
+    return NextResponse.json({ error: { message: 'Missing token' } }, { status: 400 });
   }
 
   const response = NextResponse.json({ ok: true }, { status: 200 });
@@ -41,6 +41,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
  */
 export async function DELETE(_request: NextRequest): Promise<NextResponse> {
   const response = NextResponse.json({ ok: true }, { status: 200 });
-  response.cookies.set(COOKIE_NAME, "", { ...COOKIE_OPTIONS, maxAge: 0 });
+  response.cookies.set(COOKIE_NAME, '', { ...COOKIE_OPTIONS, maxAge: 0 });
   return response;
 }
