@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Wallet, TrendingUp, RefreshCw, ExternalLink } from 'lucide-react';
+import { Wallet, TrendingUp, RefreshCw, ExternalLink } from 'lucide-react';
 import { useWeb3Store } from '../stores/useWeb3Store';
 import { useTokenStore, TF_TOKEN_INFO } from '../stores/tokenStore';
 
@@ -136,6 +136,7 @@ export default function WalletDropdown({ address, isOpen, onToggle }: WalletDrop
             disabled={isRefreshing || isLoading}
             className="p-1 hover:bg-slate-700 rounded-full transition-colors disabled:opacity-50"
             title="Refresh balances"
+            aria-label="Refresh balances"
           >
             <RefreshCw
               className={`w-4 h-4 text-slate-400 ${isRefreshing || isLoading ? 'animate-spin' : ''}`}
